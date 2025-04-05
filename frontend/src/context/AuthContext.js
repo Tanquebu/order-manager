@@ -46,7 +46,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await api.post("/logout");
+    try {
+      await api.post('/logout');
+    } catch (err) {
+      console.warn("Logout fallito lato server", err);
+    }
+  
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
 
