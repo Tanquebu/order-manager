@@ -46,3 +46,11 @@ Route::middleware('auth:sanctum')->prefix('products')->group(function () {
     Route::put('/{product}', [\App\Http\Controllers\ProductController::class, 'update']);
     Route::delete('/{product}', [\App\Http\Controllers\ProductController::class, 'destroy']);
 });
+
+Route::middleware('auth:sanctum')->prefix('orders')->group(function () {
+    Route::get('/', [\App\Http\Controllers\OrderController::class, 'index']);
+    Route::post('/', [\App\Http\Controllers\OrderController::class, 'store']);
+    Route::get('/{order}', [\App\Http\Controllers\OrderController::class, 'show']);
+    Route::put('/{order}', [\App\Http\Controllers\OrderController::class, 'update']);
+    Route::delete('/{order}', [\App\Http\Controllers\OrderController::class, 'destroy']);
+});

@@ -7,6 +7,8 @@ use App\Enums\OrderStatus;
 
 class Order extends Model
 {
+    protected $fillable = ['customer_id', 'status'];
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);

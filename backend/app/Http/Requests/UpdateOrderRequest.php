@@ -24,7 +24,11 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['sometimes', Rule::in(OrderStatus::values())],
+            'customer_id' => 'sometimes|required|exists:customers,id',
+            'status' => ['sometimes|required|string', Rule::in(OrderStatus::values())],
+            'products' => 'sometimes|array|min:1',
+            'products.*.id' => 'required_with:products|exists:products,id',
+            'products.*.quantity' => 'required_with:products|integer|min:1',
         ];
     }
 }
