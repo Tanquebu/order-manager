@@ -7,6 +7,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      getUser(); // se presenti recupero i dati dell'utente al ricaricamento del frontend
+    }
+  }, []);
+
   const getUser = async () => {
     try {
       const res = await api.get("/user");
@@ -19,8 +27,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (credentials) => {
-    const res = await api.post("/login", credentials);
-    setUser(res.data.user);
+    try {
+      const res = await api.post('/login', credentials);
+      const token = res.data.access_token;
+  
+      // salvo il token in localStorage
+      // e lo imposto come header di default per le richieste future
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  
+      setUser(res.data.user);
+  
+      return true;
+    } catch (err) {
+      console.error("Errore login:", err);
+      return false;
+    }
   };
 
   const logout = async () => {
