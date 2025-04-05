@@ -6,7 +6,7 @@ This project was built as a technical assessment and demonstrates key full-stack
 
 - Secure authentication with **Laravel Sanctum**
 - Fully functional **CRUD APIs** for Customers, Products, and Orders
-- Order state management: `new → pending → payed → processing  → shipped → delivered → closed`
+- Order state management: `new → pending → payed → processing → shipped → delivered → closed`
 - Admin dashboard with filters, form validation, and protected routes
 - Clean architectural separation and REST best practices
 
