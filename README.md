@@ -34,21 +34,23 @@ This project uses **Laravel Sail** to handle the backend and integrates a separa
 git clone git@github.com:Tanquebu/order-manager.git
 cd order-manager
 ```
-2. Start the Laravel container:
+2. Copy env config and start the Laravel container:
 ```bash
 cd backend
+cp .env.example .env
 ./vendor/bin/sail up -d
 ```
 3. Run migrations
 ```bash
 ./vendor/bin/sail artisan migrate
 ```
-4. Start the frontend
+4. Copy env config and start the frontend
 ```bash
 cd frontend
+cp .env.example .env
 npm install
 npm start
 ```
 5. The backend will be available at: http://localhost
 
-6. The React frontend will be available at: http://localhost:5173
+6. The React frontend will be available at: http://localhost:5000
