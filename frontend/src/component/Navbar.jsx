@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
 
   return (
     <nav className="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
