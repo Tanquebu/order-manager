@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 const AuthContext = createContext();
@@ -6,12 +7,15 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       getUser(); // se presenti recupero i dati dell'utente al ricaricamento del frontend
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -37,6 +41,8 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   
       setUser(res.data.user);
+
+      navigate("/dashboard");
   
       return true;
     } catch (err) {
@@ -55,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
+    navigate("/login");
   };
 
   useEffect(() => {
