@@ -1,23 +1,23 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
-
+use Illuminate\Support\Facades\Route;
 
 Route::post('/login', function (Request $request) {
-    Log::info('Richiesta login ricevuta', $request->all());
     $credentials = $request->only('email', 'password');
 
     if (!Auth::attempt($credentials)) {
         return response()->json(['message' => 'Credenziali non valide'], 401);
     }
 
+    $user = Auth::user();
+    $token = $user->createToken('api-token')->plainTextToken;
+
     return response()->json([
-        'message' => 'Login effettuato',
-        'user' => Auth::user(),
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+        'user' => $user,
     ]);
 });
 
@@ -26,6 +26,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
-    Auth::logout();
+    $request->user()->currentAccessToken()->delete();
     return response()->json(['message' => 'Logout effettuato']);
 });
