@@ -9,6 +9,14 @@ use App\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
+    public function latest()
+    {
+        return Order::with('customer', 'products')
+            ->orderByDesc('created_at')
+            ->take(5)
+            ->get();
+    }
+
     public function index()
     {
         return Order::with('customer', 'products')->paginate(10);

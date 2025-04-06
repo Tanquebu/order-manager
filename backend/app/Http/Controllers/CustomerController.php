@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateCustomerRequest;
 
 class CustomerController extends Controller
 {
+    public function latest()
+    {
+        return Customer::orderByDesc('created_at')
+            ->take(5)
+            ->get();
+    }
+
     public function index()
     {
         return response()->json(Customer::all());

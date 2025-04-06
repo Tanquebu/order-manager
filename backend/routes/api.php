@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->prefix('customers')->group(function () {
+    Route::get('/latest', [\App\Http\Controllers\CustomerController::class, 'latest']);
     Route::get('/', [\App\Http\Controllers\CustomerController::class, 'index']);
     Route::post('/', [\App\Http\Controllers\CustomerController::class, 'store']);
     Route::get('/{customer}', [\App\Http\Controllers\CustomerController::class, 'show']);
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->prefix('customers')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('products')->group(function () {
+    Route::get('/latest', [\App\Http\Controllers\ProductController::class, 'latest']);
     Route::get('/', [\App\Http\Controllers\ProductController::class, 'index']);
     Route::post('/', [\App\Http\Controllers\ProductController::class, 'store']);
     Route::get('/{product}', [\App\Http\Controllers\ProductController::class, 'show']);
@@ -33,6 +35,7 @@ Route::middleware('auth:sanctum')->prefix('products')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('orders')->group(function () {
+    Route::get('/latest', [\App\Http\Controllers\OrderController::class, 'latest']);
     Route::get('/', [\App\Http\Controllers\OrderController::class, 'index']);
     Route::post('/', [\App\Http\Controllers\OrderController::class, 'store']);
     Route::get('/{order}', [\App\Http\Controllers\OrderController::class, 'show']);

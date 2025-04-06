@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
+    public function latest()
+    {
+        return Product::orderByDesc('created_at')
+            ->take(5)
+            ->get();
+    }
+
     public function index()
     {
         return response()->json(Product::all());
