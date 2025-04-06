@@ -15,8 +15,8 @@ const OrderForm = ({ onSuccess }) => {
         api.get("/customers"),
         api.get("/products"),
       ]);
-      setCustomers(cRes.data);
-      setProducts(pRes.data);
+      setCustomers(cRes.data.data);
+      setProducts(pRes.data.data);
     };
     fetchData();
   }, []);
