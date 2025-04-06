@@ -8,11 +8,15 @@ const CustomerList = () => {
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
 
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (page = 1) => {
         try {
-            const res = await api.get("/customers");
-            setCustomers(res.data);
+            const res = await api.get(`/customers?page=${page}`);
+            setCustomers(res.data.data);
+            setPage(res.data.current_page);
+            setLastPage(res.data.last_page);
         } catch (err) {
             setError("Errore nel caricamento clienti.");
         } finally {
@@ -38,7 +42,7 @@ const CustomerList = () => {
         if (!window.confirm("Attenzione: eliminando questo customer, saranno rimossi anche gli ordini in cui è presente. Vuoi continuare?")) return;
         try {
           await api.delete(`/customers/${id}`);
-          fetchCustomers();
+          fetchCustomers(page);
         } catch (err) {
           console.error("Errore nella cancellazione:", err);
         }
@@ -53,7 +57,7 @@ const CustomerList = () => {
             }
             setShowForm(false);
             setEditingCustomer(null);
-            fetchCustomers();
+            fetchCustomers(page);
         } catch (err) {
             console.error("Errore nel salvataggio:", err);
         }
@@ -73,6 +77,25 @@ const CustomerList = () => {
             {error && <p className="text-red-500">{error}</p>}
 
             {customers.length > 0 ? (
+                <>
+                <div className="flex justify-center gap-4 mb-4 text-sm">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => fetchCustomers(page - 1)}
+                        className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+                    >
+                        ← Precedente
+                    </button>
+                    <span>Pagina {page} di {lastPage}</span>
+                    <button
+                        disabled={page === lastPage}
+                        onClick={() => fetchCustomers(page + 1)}
+                        className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+                    >
+                        Successiva →
+                    </button>
+                </div>
+                
                 <table className="w-full border text-sm">
                     <thead className="bg-gray-100">
                         <tr>
@@ -100,6 +123,25 @@ const CustomerList = () => {
                         ))}
                     </tbody>
                 </table>
+
+                <div className="flex justify-center gap-4 mt-4 text-sm">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => fetchCustomers(page - 1)}
+                        className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+                    >
+                        ← Precedente
+                    </button>
+                    <span>Pagina {page} di {lastPage}</span>
+                    <button
+                        disabled={page === lastPage}
+                        onClick={() => fetchCustomers(page + 1)}
+                        className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+                    >
+                        Successiva →
+                    </button>
+                </div>
+                </>
             ) : (
                 !loading && <p>Nessun cliente disponibile.</p>
             )}
