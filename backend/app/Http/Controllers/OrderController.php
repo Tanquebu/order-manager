@@ -11,7 +11,8 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return response()->json(Order::with('customer', 'products')->get());
+        return Order::with('customer', 'products')->paginate(10);
+        //return response()->json(Order::with('customer', 'products')->get());
     }
 
     public function store(StoreOrderRequest $request)
