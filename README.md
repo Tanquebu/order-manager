@@ -134,3 +134,10 @@ Includes:
 - Validation failure
 - Authorization checks
 - Listing orders
+
+## 📚 API Documentation (Optional)
+
+To view the auto-generated API documentation using [Scribe](https://scribe.knuckles.wtf/), switch to the `feature/scribe-docs` branch:
+
+```bash
+git checkout feature/scribe-docs
