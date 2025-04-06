@@ -4,6 +4,18 @@
 
 This project was developed as part of a technical evaluation and showcases best practices in API design, authentication, state management, and user experience.
 
+## Access to the Dashboard
+
+Once the project is up and running, you can access the frontend at:
+
+🔗 [http://localhost:5000](http://localhost:5000)
+
+To log in, use the test user created by the database seeder:
+
+- **Email**: `admin@example.com`  
+- **Password**: `password`
+
+
 ---
 ## 🧩 Features
 
