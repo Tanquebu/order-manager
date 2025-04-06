@@ -51,7 +51,7 @@ const ProductList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Sei sicuro di voler eliminare questo prodotto?")) return;
+    if (!window.confirm("Attenzione: eliminando questo prodotto, sarà rimosso anche dagli ordini in cui è presente. Vuoi continuare?")) return;
     try {
       await api.delete(`/products/${id}`);
       fetchProducts();

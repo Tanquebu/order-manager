@@ -35,7 +35,7 @@ const CustomerList = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Sei sicuro di voler eliminare questo cliente?")) return;
+        if (!window.confirm("Attenzione: eliminando questo customer, saranno rimossi anche gli ordini in cui è presente. Vuoi continuare?")) return;
         try {
           await api.delete(`/customers/${id}`);
           fetchCustomers();
