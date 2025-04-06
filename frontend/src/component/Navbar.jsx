@@ -9,8 +9,16 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
       <div className="text-lg font-semibold">Order Manager</div>
       <div className="flex items-center gap-6">
-        <NavLink
+      <NavLink
           to="/dashboard"
+          className={({ isActive }) =>
+            isActive ? "underline text-white" : "text-gray-300 hover:text-white"
+          }
+        >
+          Dashboard
+        </NavLink>
+        <NavLink
+          to="/orders"
           className={({ isActive }) =>
             isActive ? "underline text-white" : "text-gray-300 hover:text-white"
           }

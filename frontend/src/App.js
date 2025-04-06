@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Navbar from "./component/Navbar";
 import CustomerList from "./pages/CustomerList";
 import ProductList from "./pages/ProductList";
+import OrderList from "./pages/OrderList";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -39,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CustomerList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrderList />
               </ProtectedRoute>
             }
           />
