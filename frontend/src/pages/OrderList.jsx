@@ -91,6 +91,26 @@ const OrderList = () => {
 
       {filteredOrders.length > 0 ? (
         <>
+          <div className="flex justify-center mb-3 gap-2 text-sm">
+            <button
+              disabled={page === 1}
+              onClick={() => fetchOrders(page - 1)}
+              className="bg-gray-200 px-2 py-1 rounded disabled:opacity-50"
+            >
+              ← Precedente
+            </button>
+            <span>
+              Pagina {page} di {lastPage}
+            </span>
+            <button
+              disabled={page === lastPage}
+              onClick={() => fetchOrders(page + 1)}
+              className="bg-gray-200 px-2 py-1 rounded disabled:opacity-50"
+            >
+              Successiva →
+            </button>
+          </div>
+
           <table className="w-full text-sm border mb-4">
             <thead className="bg-gray-100">
               <tr>
