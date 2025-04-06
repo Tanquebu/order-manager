@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\Order;
 use App\Models\Product;
 
 class OrderApiTest extends TestCase
@@ -70,4 +71,23 @@ class OrderApiTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['customer_id', 'products']);
     }
+
+    
+    public function test_authenticated_user_can_list_orders()
+    {
+        $this->authenticate();
+
+        Order::factory()->count(2)->create();
+
+        $response = $this->getJson('/api/orders');
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['data']);
+    }
+
+    public function test_unauthenticated_user_cannot_list_orders()
+    {
+        $response = $this->getJson('/api/orders');
+        $response->assertStatus(401);
+    }
+
 }
