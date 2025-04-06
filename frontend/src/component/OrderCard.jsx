@@ -1,4 +1,5 @@
 import React from "react";
+import { formatPrice } from "../utils/format";
 
 const OrderCard = ({ order }) => {
   const total = order.products.reduce(
@@ -18,11 +19,11 @@ const OrderCard = ({ order }) => {
       <ul className="text-sm mb-2">
         {order.products.map((p) => (
           <li key={p.id}>
-            {p.name} × {p.pivot.quantity} — €{(p.price * p.pivot.quantity).toFixed(2)}
+            {p.name} × {p.pivot.quantity} — {formatPrice(p.price * p.pivot.quantity)}
           </li>
         ))}
       </ul>
-      <div className="font-semibold">Totale: €{total.toFixed(2)}</div>
+      <div className="font-semibold">Totale: {formatPrice(total)}</div>
     </div>
   );
 };

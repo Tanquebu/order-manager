@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import ProductForm from "../component/ProductForm";
+import { formatPrice } from "../utils/format";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -89,7 +90,7 @@ const ProductList = () => {
               <tr key={p.id}>
                 <td className="border px-3 py-2">{p.id}</td>
                 <td className="border px-3 py-2">{p.name}</td>
-                <td className="border px-3 py-2">€  {(parseFloat(p.price) || 0).toFixed(2)}</td>
+                <td className="border px-3 py-2">{formatPrice(p.price)}</td>
                 <td className="border px-3 py-2">
                   <button
                     onClick={() => handleEdit(p)}
