@@ -6,6 +6,7 @@ const OrderForm = ({ onSuccess }) => {
   const [products, setProducts] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [productToAdd, setProductToAdd] = useState("");
   const [status, setStatus] = useState("pending");
 
   useEffect(() => {
@@ -20,15 +21,33 @@ const OrderForm = ({ onSuccess }) => {
     fetchData();
   }, []);
 
-  const handleProductChange = (productId, quantity) => {
-    const updated = [...selectedProducts];
-    const index = updated.findIndex((p) => p.id === productId);
-    if (index > -1) {
-      updated[index].quantity = quantity;
-    } else {
-      updated.push({ id: productId, quantity });
+  const addProduct = () => {
+    if (!productToAdd) return;
+
+    const exists = selectedProducts.find((p) => p.id === productToAdd);
+    if (!exists) {
+      const product = products.find((p) => p.id === parseInt(productToAdd));
+      if (product) {
+        setSelectedProducts([
+          ...selectedProducts,
+          { id: product.id, name: product.name, quantity: 1 },
+        ]);
+      }
     }
-    setSelectedProducts(updated);
+
+    setProductToAdd("");
+  };
+
+  const updateQuantity = (id, quantity) => {
+    setSelectedProducts((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, quantity: parseInt(quantity, 10) || 1 } : p
+      )
+    );
+  };
+
+  const removeProduct = (id) => {
+    setSelectedProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +55,10 @@ const OrderForm = ({ onSuccess }) => {
     try {
       await api.post("/orders", {
         customer_id: selectedCustomer,
-        products: selectedProducts,
+        products: selectedProducts.map(({ id, quantity }) => ({
+          id,
+          quantity,
+        })),
         status,
       });
       onSuccess && onSuccess();
@@ -65,24 +87,53 @@ const OrderForm = ({ onSuccess }) => {
       </div>
 
       <div>
-        <label className="block text-sm mb-1">Prodotti</label>
+        <label className="block text-sm">Aggiungi prodotto</label>
+        <div className="flex gap-2">
+          <select
+            value={productToAdd}
+            onChange={(e) => setProductToAdd(e.target.value)}
+            className="border p-2 w-full"
+          >
+            <option value="">-- Seleziona prodotto --</option>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={addProduct}
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Aggiungi
+          </button>
+        </div>
+      </div>
+
+      {selectedProducts.length > 0 && (
         <div className="space-y-2">
-          {products.map((p) => (
+          {selectedProducts.map((p) => (
             <div key={p.id} className="flex items-center gap-2">
+              <span className="w-40 text-sm">{p.name}</span>
               <input
                 type="number"
-                min={0}
-                placeholder="Quantità"
-                className="w-24 border p-1 text-sm"
-                onChange={(e) =>
-                  handleProductChange(p.id, parseInt(e.target.value, 10))
-                }
+                min={1}
+                value={p.quantity}
+                onChange={(e) => updateQuantity(p.id, e.target.value)}
+                className="w-20 border p-1 text-sm"
               />
-              <span className="text-sm">{p.name}</span>
+              <button
+                type="button"
+                onClick={() => removeProduct(p.id)}
+                className="text-red-500 text-sm"
+              >
+                Rimuovi
+              </button>
             </div>
           ))}
         </div>
-      </div>
+      )}
 
       <div>
         <label className="block text-sm">Stato</label>
@@ -100,7 +151,7 @@ const OrderForm = ({ onSuccess }) => {
         </select>
       </div>
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
         Salva Ordine
       </button>
     </form>
