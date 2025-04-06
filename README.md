@@ -81,3 +81,44 @@ npm start
 5. The backend will be available at: http://localhost
 
 6. The React frontend will be available at: http://localhost:5000
+
+## 📒 API Endpoints Overview
+All API routes are protected and require JWT Bearer authentication via Laravel Sanctum.
+
+### Authentication
+- `POST /api/login`
+- `POST /api/logout`
+- `GET /api/user`
+
+### Orders
+- `GET /api/orders`
+- `POST /api/orders`
+- `PUT /api/orders/{id}`
+- `DELETE /api/orders/{id}`
+
+### Customers
+- `GET /api/customers`
+- `POST /api/customers`
+- `PUT /api/customers/{id}`
+- `DELETE /api/customers/{id}`
+
+### Products
+- `GET /api/products`
+- `POST /api/products`
+- `PUT /api/products/{id}`
+- `DELETE /api/products/{id}`
+
+## 🧪 Running Tests
+
+From the backend directory:
+
+```bash
+./vendor/bin/sail artisan test
+```
+
+Includes:
+- Login test
+- Order creation
+- Validation failure
+- Authorization checks
+- Listing orders
