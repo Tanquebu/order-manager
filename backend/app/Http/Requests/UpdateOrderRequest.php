@@ -13,7 +13,7 @@ class UpdateOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,12 +23,17 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'customer_id' => 'sometimes|required|exists:customers,id',
-            'status' => ['sometimes|required|string', Rule::in(OrderStatus::values())],
-            'products' => 'sometimes|array|min:1',
-            'products.*.id' => 'required_with:products|exists:products,id',
-            'products.*.quantity' => 'required_with:products|integer|min:1',
+            'status' => ['sometimes', 'required', 'string', Rule::in(OrderStatus::values())],
         ];
+    
+        if ($this->has('products')) {
+            $rules['products'] = 'required|array|min:1';
+            $rules['products.*.id'] = 'required|exists:products,id';
+            $rules['products.*.quantity'] = 'required|integer|min:1';
+        }
+    
+        return $rules;
     }
 }
