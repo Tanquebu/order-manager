@@ -22,6 +22,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
+    <div className="p-4 max-w-screen-xl mx-auto">
     <Router>
       <AuthProvider>
         <Routes>
@@ -62,6 +63,7 @@ function App() {
         </Routes>
       </AuthProvider>
     </Router>
+    </div>
   );
 }
 

@@ -14,11 +14,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-lg font-semibold text-blue-700">🧾 OrderManager</div>
+    <nav className="bg-white shadow-sm sticky px-4 py-3 top-0 z-50">
+      <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="text-sm sm:text-lg font-semibold text-blue-700">🧾 OrderManager</div>
 
-        <div className="flex space-x-4">
+        <div className="flex flex-col sm:flex-row gap-3 text-sm">
           {navItems.map(({ label, path }) => (
             <Link
               key={path}
@@ -34,8 +34,8 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-600">👤 {user?.name}</span>
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-sm text-gray-600 hidden sm:inline">👤 {user?.name}</span>
           <button
             onClick={logout}
             className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition"

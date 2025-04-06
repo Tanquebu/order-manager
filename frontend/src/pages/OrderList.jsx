@@ -88,7 +88,7 @@ const OrderList = () => {
         </div>
       )}
 
-      <div className="mb-4 flex items-center gap-2 text-sm">
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm">
         <label>Filtra per stato:</label>
         <select
           className="border p-1 rounded"
@@ -107,6 +107,7 @@ const OrderList = () => {
 
       {filteredOrders.length > 0 ? (
         <>
+        <div className="overflow-x-auto">
           <table className="w-full text-sm border mb-6">
             <thead className="bg-gray-100 text-left">
               <tr>
@@ -188,7 +189,7 @@ const OrderList = () => {
               })}
             </tbody>
           </table>
-
+          </div>
           <div className="flex justify-center gap-2 text-sm">
             <button
               disabled={page === 1}
