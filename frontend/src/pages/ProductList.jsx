@@ -9,11 +9,15 @@ const ProductList = () => {
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 1) => {
     try {
-      const res = await api.get("/products");
-      setProducts(res.data);
+      const res = await api.get(`/products?page=${page}`);
+      setProducts(res.data.data);
+      setPage(res.data.current_page);
+      setLastPage(res.data.last_page);
     } catch (err) {
       setError("Errore nel caricamento prodotti.");
     } finally {
@@ -44,7 +48,7 @@ const ProductList = () => {
       }
       setShowForm(false);
       setEditingProduct(null);
-      fetchProducts();
+      fetchProducts(page);
     } catch (err) {
       console.error("Errore nel salvataggio prodotto:", err);
     }
@@ -54,7 +58,7 @@ const ProductList = () => {
     if (!window.confirm("Attenzione: eliminando questo prodotto, sarà rimosso anche dagli ordini in cui è presente. Vuoi continuare?")) return;
     try {
       await api.delete(`/products/${id}`);
-      fetchProducts();
+      fetchProducts(page);
     } catch (err) {
       console.error("Errore nella cancellazione:", err);
     }
@@ -75,6 +79,24 @@ const ProductList = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       {products.length > 0 ? (
+        <>
+        <div className="flex justify-center gap-4 mb-4 text-sm">
+          <button
+            disabled={page === 1}
+            onClick={() => fetchProducts(page - 1)}
+            className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+          >
+            ← Precedente
+          </button>
+          <span>Pagina {page} di {lastPage}</span>
+          <button
+            disabled={page === lastPage}
+            onClick={() => fetchProducts(page + 1)}
+            className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+          >
+            Successiva →
+          </button>
+        </div>
         <table className="w-full border text-sm">
           <thead className="bg-gray-100">
             <tr>
@@ -86,7 +108,6 @@ const ProductList = () => {
           </thead>
           <tbody>
             {products.map((p) => (
-                console.log(p.price),
               <tr key={p.id}>
                 <td className="border px-3 py-2">{p.id}</td>
                 <td className="border px-3 py-2">{p.name}</td>
@@ -109,6 +130,25 @@ const ProductList = () => {
             ))}
           </tbody>
         </table>
+
+        <div className="flex justify-center gap-4 mt-4 text-sm">
+          <button
+            disabled={page === 1}
+            onClick={() => fetchProducts(page - 1)}
+            className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+          >
+            ← Precedente
+          </button>
+          <span>Pagina {page} di {lastPage}</span>
+          <button
+            disabled={page === lastPage}
+            onClick={() => fetchProducts(page + 1)}
+            className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+          >
+            Successiva →
+          </button>
+        </div>
+        </>
       ) : (
         !loading && <p>Nessun prodotto disponibile.</p>
       )}

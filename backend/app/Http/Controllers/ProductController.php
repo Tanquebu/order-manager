@@ -17,7 +17,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        return response()->json(Product::all());
+        return Product::orderByDesc('created_at')->paginate(10);
     }
 
     public function store(StoreProductRequest $request)
