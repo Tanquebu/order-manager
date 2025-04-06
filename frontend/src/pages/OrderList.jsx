@@ -7,11 +7,18 @@ const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState({});
 
   const fetchOrders = async () => {
     try {
       const res = await api.get("/orders");
       setOrders(res.data);
+      // Inizializza gli status correnti
+      const initialStatus = {};
+      res.data.forEach((order) => {
+        initialStatus[order.id] = order.status;
+      });
+      setPendingStatus(initialStatus);
     } catch (err) {
       console.error("Errore nel caricamento ordini:", err);
     }
@@ -21,11 +28,12 @@ const OrderList = () => {
     fetchOrders();
   }, []);
 
-  const updateOrderStatus = async (id, status) => {
+  const updateOrderStatus = async (id) => {
     try {
-      await api.put(`/orders/${id}`, { status });
+      const newStatus = pendingStatus[id];
+      await api.put(`/orders/${id}`, { status: newStatus });
       setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, status } : o))
+        prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
       );
     } catch (err) {
       console.error("Errore aggiornamento stato ordine:", err);
@@ -33,8 +41,12 @@ const OrderList = () => {
   };
 
   const filteredOrders = statusFilter
-    ? orders.filter((o) => o.status === statusFilter)
-    : orders;
+  ? orders.filter((o) => o.status === statusFilter)
+  : orders;
+
+  const cancelChange = (id, originalStatus) => {
+    setPendingStatus((prev) => ({ ...prev, [id]: originalStatus }));
+  };
 
   return (
     <div className="p-6">
@@ -85,46 +97,74 @@ const OrderList = () => {
               <th className="border px-2 py-1 text-left">Prodotti</th>
               <th className="border px-2 py-1 text-left">Totale</th>
               <th className="border px-2 py-1 text-left">Stato</th>
+              <th className="border px-2 py-1 text-left">Azioni</th>
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order) => (
-              <tr key={order.id}>
-                <td className="border px-2 py-1">#{order.id}</td>
-                <td className="border px-2 py-1">{order.customer?.name}</td>
-                <td className="border px-2 py-1">
-                  {order.products.map((p) => (
-                    <div key={p.id}>
-                      {p.name} × {p.pivot.quantity}
-                    </div>
-                  ))}
-                </td>
-                <td className="border px-2 py-1">
-                  {formatPrice(
-                    order.products.reduce(
-                      (acc, p) => acc + p.price * p.pivot.quantity,
-                      0
-                    )
-                  )}
-                </td>
-                <td className="border px-2 py-1">
-                  <select
-                    className="border p-1 text-sm"
-                    value={order.status}
-                    onChange={(e) =>
-                      updateOrderStatus(order.id, e.target.value)
-                    }
-                  >
-                    <option value="pending">In attesa</option>
-                    <option value="processing">In elaborazione</option>
-                    <option value="shipped">Spedito</option>
-                    <option value="delivered">Consegnato</option>
-                    <option value="canceled">Annullato</option>
-                    <option value="closed">Chiuso</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {filteredOrders.map((order) => {
+              const original = order.status;
+              const current = pendingStatus[order.id];
+              const isDirty = current !== original;
+
+              return (
+                <tr key={order.id}>
+                  <td className="border px-2 py-1">#{order.id}</td>
+                  <td className="border px-2 py-1">{order.customer?.name}</td>
+                  <td className="border px-2 py-1">
+                    {order.products.map((p) => (
+                      <div key={p.id}>
+                        {p.name} × {p.pivot.quantity}
+                      </div>
+                    ))}
+                  </td>
+                  <td className="border px-2 py-1">
+                    {formatPrice(
+                      order.products.reduce(
+                        (acc, p) => acc + p.price * p.pivot.quantity,
+                        0
+                      )
+                    )}
+                  </td>
+                  <td className="border px-2 py-1">
+                    <select
+                      className="border p-1 text-sm"
+                      value={pendingStatus[order.id]}
+                      onChange={(e) =>
+                        setPendingStatus((prev) => ({
+                          ...prev,
+                          [order.id]: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="pending">In attesa</option>
+                      <option value="processing">In elaborazione</option>
+                      <option value="shipped">Spedito</option>
+                      <option value="delivered">Consegnato</option>
+                      <option value="canceled">Annullato</option>
+                      <option value="closed">Chiuso</option>
+                    </select>
+                  </td>
+                  <td className="border px-2 py-1 space-x-2">
+                    {isDirty && (
+                      <>
+                        <button
+                          onClick={() => updateOrderStatus(order.id)}
+                          className="text-green-600 text-sm"
+                        >
+                          Salva
+                        </button>
+                        <button
+                          onClick={() => cancelChange(order.id, original)}
+                          className="text-red-500 text-sm"
+                        >
+                          Annulla
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
