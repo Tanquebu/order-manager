@@ -141,3 +141,5 @@ To view the auto-generated API documentation using [Scribe](https://scribe.knuck
 
 ```bash
 git checkout feature/scribe-docs
+```
+Static documentation will be available at http://localhost/docs
