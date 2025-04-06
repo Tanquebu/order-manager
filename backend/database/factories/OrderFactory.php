@@ -14,10 +14,6 @@ use Illuminate\Support\Str;
  */
 class OrderFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
 
     public function configure()
     {
