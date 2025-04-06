@@ -21,6 +21,17 @@ const OrderList = () => {
     fetchOrders();
   }, []);
 
+  const updateOrderStatus = async (id, status) => {
+    try {
+      await api.put(`/orders/${id}`, { status });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, status } : o))
+      );
+    } catch (err) {
+      console.error("Errore aggiornamento stato ordine:", err);
+    }
+  };
+
   const filteredOrders = statusFilter
     ? orders.filter((o) => o.status === statusFilter)
     : orders;
@@ -96,7 +107,22 @@ const OrderList = () => {
                     )
                   )}
                 </td>
-                <td className="border px-2 py-1">{order.status}</td>
+                <td className="border px-2 py-1">
+                  <select
+                    className="border p-1 text-sm"
+                    value={order.status}
+                    onChange={(e) =>
+                      updateOrderStatus(order.id, e.target.value)
+                    }
+                  >
+                    <option value="pending">In attesa</option>
+                    <option value="processing">In elaborazione</option>
+                    <option value="shipped">Spedito</option>
+                    <option value="delivered">Consegnato</option>
+                    <option value="canceled">Annullato</option>
+                    <option value="closed">Chiuso</option>
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
